@@ -1,4 +1,5 @@
-# classe base cliente 
+from functions import *
+
 class Cliente(BaseModel):
     id: int
     nome: str
