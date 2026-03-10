@@ -1,11 +1,8 @@
-from pydantic import BaseModel
-from datetime import date # tipo data
-
 # classe base cliente 
 class Cliente(BaseModel):
     id: int
     nome: str
-    Sobrenome: str 
+    sobrenome: str 
     data_de_nascimento: date
     cpf: str
 
@@ -17,7 +14,7 @@ class Produtos(BaseModel):
     quantidade: int
 
 
-class ordemVendas(BaseModel):
+class OrdemDeVendas(BaseModel):
     id: int
     cliente: Cliente.id
     produto: Produtos.id 
