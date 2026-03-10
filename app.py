@@ -17,4 +17,3 @@ if not os.path.exists(file_path):
         writer.writerows(data)
 else:
     print('O arquivo já existe!')
-
