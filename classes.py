@@ -17,5 +17,5 @@ class Produtos(BaseModel):
 
 class OrdemDeVendas(BaseModel):
     id: int
-    cliente: Cliente.id
-    produto: Produtos.id 
+    cliente: int
+    produto: int

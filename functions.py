@@ -6,7 +6,7 @@ import csv
 from pydantic import BaseModel
 from datetime import date  # tipo data
 
-
+app = FastAPI()
 # ---------------------------------------------------------------------------------- #
                 # FUNÇÕES PARA VERIFICAR O CSV (SE JÁ ESTÁ CRIADO / CRIAR) #
 
@@ -66,7 +66,7 @@ def verificar_csv_ordemdevendas():
 def ler_clientes_csv():
 
     file_path = "Clientes.csv"
-    data = [["ID", "NOME"]]
+    data = [["ID", "NOME", "SOBRENOME", "DATA_DE_NASCIMENTO", "CPF"]]
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -82,7 +82,7 @@ def ler_clientes_csv():
 def ler_produtos_csv():
 
     file_path = "Produtos.csv"
-    data = [["ID", "NOME"]]
+    data = [["ID", "NOME", "FORNECEDOR", "QUANTIDADE"]]
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -97,7 +97,7 @@ def ler_produtos_csv():
 def ler_ordemdevendas_csv():
 
     file_path = "OrdemDeVendas.csv"
-    data = [["ID", "NOME"]]
+    data = [["ID", "CLIENTE", "PRODUTO"]]
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
