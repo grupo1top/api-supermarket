@@ -148,7 +148,7 @@ def salvar_produtos_csv(data):
 
     file_path = "Produtos.csv"
 
-    with open(file_path, mode=w,newline='', encoding='utf-8') as file:
+    with open(file_path, mode="w",newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerows(data)
 
@@ -156,7 +156,7 @@ def salvar_ordemdevendas_csv(data):
 
     file_path = "OrdemDeVendas.csv"
 
-    with open(file_path, mode=w,newline='', encoding='utf-8') as file:
+    with open(file_path, mode="w",newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerows(data)
 
