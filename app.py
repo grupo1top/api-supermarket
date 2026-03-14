@@ -1,7 +1,9 @@
 from functions import *
 from classes import *
 
+# -------------------------------------------- CLIENTES -------------------------------------------------------- #
 verificar_csv_clientes()
+
 # put clientes 
 @app.put("/clientes")
 async def atualizar_cliente(cliente: Cliente):
@@ -36,4 +38,41 @@ async def atualizar_cliente(cliente: Cliente):
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
 
     return D_clientes
+
+# ----------------------------------------------------- PRODUTOS -------------------------------------------------------------- #
+verificar_csv_produtos()
+
+# put produtos
+@app.put("/produtos")
+async def atualizar_cliente(produto: Produtos):
+    D_produtos = {}
+    encontrar_id = False
+    #abrir o arquivo em modo leitura
+    data = ler_produtos_csv()
+    #percorrer ele até achar o id informado 
+    for linha in data:
+        if linha[0] == str(produto.id):
+            encontrar_id = True
+            #quando achar substituir o nome
+            linha[1] = produto.nome
+            linha[2] = produto.fornecedor
+            linha[3] = str(produto.quantidade)
+    if encontrar_id == False:
+        return {"ERRO" : "ID NÃO ENCONTRADO"}
+    # reescrever no arquivo 
+    salvar_produtos_csv(data)
+    # ler o arquivo dnv para retornar o novo dicionário
+
+    file_path = "Produtos.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_produtos[row[0]] = [row[1], row[2], row[3]]
+
+    return D_produtos
 
