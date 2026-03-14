@@ -39,12 +39,13 @@ async def atualizar_cliente(cliente: Cliente):
 
     return D_clientes
 
+
 # ----------------------------------------------------- PRODUTOS -------------------------------------------------------------- #
 verificar_csv_produtos()
 
 # put produtos
 @app.put("/produtos")
-async def atualizar_cliente(produto: Produtos):
+async def atualizar_produto(produto: Produtos):
     D_produtos = {}
     encontrar_id = False
     #abrir o arquivo em modo leitura
@@ -75,4 +76,65 @@ async def atualizar_cliente(produto: Produtos):
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
 
     return D_produtos
+
+# ------------------------------------------------------------------- ORDEM DE VENDAS -------------------------------------------------------------
+
+verificar_csv_ordemdevendas()
+@app.put("/ordens")
+async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
+
+    clientes = ler_clientes_csv()
+    produtos = ler_produtos_csv()
+
+    D_ordensVendas = {}
+
+    encontrar_id = False
+    id_cliente = False
+    id_produto = False
+
+    #abrir o arquivo em modo leitura
+    data = ler_ordemdevendas_csv()
+
+    #percorrer ele até achar o id informado 
+    for linha in data:
+        if linha[0] == str(ordemVendas.id):
+            print(linha)
+            encontrar_id = True
+
+            for cliente in clientes: # verificação se o cliente informado existe
+                if cliente[0] == str(ordemVendas.cliente):
+                    id_cliente = True
+                    linha[1] = str(ordemVendas.cliente)
+                    break
+            if id_cliente == False:         
+                print(cliente)
+                return {"ERRO" : "ID DO CLIENTE NÃO EXISTE"}
+                        
+            for produto in produtos: # verificação se o produto informado existe
+                if produto[0] == str(ordemVendas.produto):
+                    id_produto = True
+                    linha[2] = str(ordemVendas.produto)
+                    break
+            if id_produto != True:
+                    return {"ERRO" : "ID DO PRODUTO NÃO EXISTE"}
+
+    if encontrar_id == False:
+        return {"ERRO" : "ID NÃO ENCONTRADO"}
+    
+    # reescrever no arquivo 
+    salvar_ordemdevendas_csv(data)
+
+    # ler o arquivo dnv para retornar o novo dicionário
+    file_path = "OrdemDeVendas.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_ordensVendas[row[0]] = [row[1], row[2]]
+
+    return D_ordensVendas
 
