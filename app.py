@@ -4,6 +4,16 @@ from classes import *
 # -------------------------------------------- CLIENTES -------------------------------------------------------- #
 verificar_csv_clientes()
 
+#get clientes 
+
+@app.get("/clientes")
+def listar_clientes():
+
+    verificar_csv_clientes() #garante que o CSV exista
+    data = ler_clientes_csv () #lê os clientes
+
+    return data
+
 # put clientes 
 @app.put("/clientes")
 async def atualizar_cliente(cliente: Cliente):
@@ -80,6 +90,12 @@ async def atualizar_produto(produto: Produtos):
 # ------------------------------------------------------------------- ORDEM DE VENDAS -------------------------------------------------------------
 
 verificar_csv_ordemdevendas()
+
+@app.get("/ordens")
+def listar_ordens():
+    ordens = ler_ordemdevendas_csv()  # lê as ordens
+
+    return ordens
 @app.put("/ordens")
 async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
 
