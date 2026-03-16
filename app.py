@@ -5,6 +5,26 @@ from classes import *
 verificar_csv_clientes()
 
 
+#get clientes
+
+@app.get("/clientes")
+def listar_clientes():
+    D_clientes = {}
+
+    file_path = "Clientes.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
+
+    return D_clientes
+
+
 
 # post clientes
 @app.post("/clientes")
@@ -132,6 +152,31 @@ def listar_produtos():
 
     return D_produtos
 
+# post produtos
+@app.post("/produtos")
+async def criar_produto(produto: Produtos):
+    D_produtos = {}
+    data = ler_produtos_csv()
+
+    if id_produto_existe(data, str(produto.id)):
+        return {"ERRO" : "ID JÁ EXISTE"}
+
+    data = adicionar_produto(data, produto)
+    salvar_produtos_csv(data)
+
+    file_path = "Produtos.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_produtos[row[0]] = [row[1], row[2], row[3]]
+
+    return D_produtos
+
 
 # put produtos
 @app.put("/produtos")
@@ -166,6 +211,43 @@ async def atualizar_produto(produto: Produtos):
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
 
     return D_produtos
+
+# delete produtos
+@app.delete("/produtos/{id}")
+async def deletar_produto(id: int):
+    D_produtos = {}
+    encontrar_id = False
+
+    #abrir o arquivo em modo leitura
+    data = ler_produtos_csv()
+
+    #percorrer ele até achar o id informado
+    for linha in data:
+        if linha[0] == str(id):
+            encontrar_id = True
+            data.remove(linha)
+            break
+
+    if encontrar_id == False:
+        return {"ERRO" : "ID NÃO ENCONTRADO"}
+
+    # reescrever no arquivo
+    salvar_produtos_csv(data)
+
+    # ler o arquivo dnv para retornar o novo dicionário
+    file_path = "Produtos.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_produtos[row[0]] = [row[1], row[2], row[3]]
+
+    return D_produtos
+
 
 # ------------------------------------------------------------------- ORDEM DE VENDAS -------------------------------------------------------------
 
