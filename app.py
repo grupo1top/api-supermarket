@@ -8,10 +8,9 @@ verificar_csv_clientes()
 
 @app.get("/clientes")
 def listar_clientes():
-
     data = ler_clientes_csv () #lê os clientes
 
-    return data
+    return data #retorna os clientes
 
 # put clientes 
 @app.put("/clientes")
