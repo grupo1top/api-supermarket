@@ -12,6 +12,31 @@ def listar_clientes():
 
     return data #retorna os clientes
 
+# post clientes
+@app.post("/clientes")
+async def criar_cliente(cliente: Cliente):
+    D_clientes = {}
+    data = ler_clientes_csv()
+
+    if id_cliente_existe(data, str(cliente.id)):
+        return {"ERRO" : "ID JÁ EXISTE"}
+
+    data = adicionar_cliente(data, cliente)
+    salvar_clientes_csv(data)
+
+    file_path = "Clientes.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
+
+    return D_clientes
+
 # put clientes 
 @app.put("/clientes")
 async def atualizar_cliente(cliente: Cliente):
@@ -46,6 +71,46 @@ async def atualizar_cliente(cliente: Cliente):
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
 
     return D_clientes
+
+# delete clientes
+@app.delete("/clientes/{id}")
+async def deletar_cliente(id: int):
+    D_clientes = {}
+    encontrar_id = False
+
+    #abrir o arquivo em modo leitura
+    data = ler_clientes_csv()
+
+    #percorrer ele até achar o id informado
+    for linha in data:
+        if linha[0] == str(id):
+            encontrar_id = True
+            data.remove(linha)
+            break
+
+    if encontrar_id == False:
+        return {"ERRO" : "ID NÃO ENCONTRADO"}
+
+    # reescrever no arquivo
+    salvar_clientes_csv(data)
+
+    # ler o arquivo dnv para retornar o novo dicionário
+    file_path = "Clientes.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
+
+    return D_clientes
+
+
+
+
 
 
 # ----------------------------------------------------- PRODUTOS -------------------------------------------------------------- #
