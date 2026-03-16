@@ -253,6 +253,28 @@ async def deletar_produto(id: int):
 
 verificar_csv_ordemdevendas()
 
+
+#get ordens
+
+@app.get("/ordens")
+def listar_ordens():
+    D_ordensVendas = {}
+
+    file_path = "OrdemDeVendas.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_ordensVendas[row[0]] = [row[1], row[2]]
+
+    return D_ordensVendas
+
+
+
 @app.put("/ordens")
 async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
 
