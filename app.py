@@ -273,6 +273,52 @@ def listar_ordens():
 
     return D_ordensVendas
 
+# post ordens
+@app.post("/ordens")
+async def criar_ordemVendas(ordemVendas: OrdemDeVendas):
+
+    clientes = ler_clientes_csv()
+    produtos = ler_produtos_csv()
+
+    D_ordensVendas = {}
+    data = ler_ordemdevendas_csv()
+
+    if id_ordemdevenda_existe(data, str(ordemVendas.id)):
+        return {"ERRO" : "ID JÁ EXISTE"}
+
+    id_cliente = False
+    id_produto = False
+
+    for cliente in clientes: # verificação se o cliente informado existe
+        if cliente[0] == str(ordemVendas.cliente):
+            id_cliente = True
+            break
+    if id_cliente == False:
+        return {"ERRO" : "ID DO CLIENTE NÃO EXISTE"}
+
+    for produto in produtos: # verificação se o produto informado existe
+        if produto[0] == str(ordemVendas.produto):
+            id_produto = True
+            break
+    if id_produto != True:
+        return {"ERRO" : "ID DO PRODUTO NÃO EXISTE"}
+
+    data = adicionar_ordemdevendas(data, ordemVendas)
+    salvar_ordemdevendas_csv(data)
+
+    file_path = "OrdemDeVendas.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_ordensVendas[row[0]] = [row[1], row[2]]
+
+    return D_ordensVendas
+
 
 
 @app.put("/ordens")
@@ -332,4 +378,6 @@ async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
                 D_ordensVendas[row[0]] = [row[1], row[2]]
 
     return D_ordensVendas
+
+
 
