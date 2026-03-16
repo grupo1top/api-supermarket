@@ -9,7 +9,6 @@ verificar_csv_clientes()
 @app.get("/clientes")
 def listar_clientes():
 
-    verificar_csv_clientes() #garante que o CSV exista
     data = ler_clientes_csv () #lê os clientes
 
     return data
