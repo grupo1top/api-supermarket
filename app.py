@@ -89,31 +89,36 @@ async def atualizar_cliente(cliente: Cliente):
 # delete clientes
 @app.delete("/clientes/{id}")
 async def deletar_cliente(id: int):
+    data = [
+        ["ID", "NOME", "SOBRENOME", "DATA_DE_NASCIMENTO", "CPF"]
+    ]
+
     D_clientes = {}
-    encontrar_id = False
-
-    #abrir o arquivo em modo leitura
-    data = ler_clientes_csv()
-
-    #percorrer ele até achar o id informado
-    for linha in data:
-        if linha[0] == str(id):
-            encontrar_id = True
-            data.remove(linha)
-            break
-
-    if encontrar_id == False:
-        return {"ERRO" : "ID NÃO ENCONTRADO"}
-
-    # reescrever no arquivo
-    salvar_clientes_csv(data)
-
-    # ler o arquivo dnv para retornar o novo dicionário
     file_path = "Clientes.csv"
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                data.append(row)
 
+    cont = False
+    for linha in data:
+        if linha[0] == str(id):
+            data.pop(data.index(linha))
+            cont = True
+
+    if cont != True:
+        return {"ERRO":"ID informado não existe"}
+
+    with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
         for row in reader:
             if row[0] == 'ID':
                 continue
@@ -215,31 +220,36 @@ async def atualizar_produto(produto: Produtos):
 # delete produtos
 @app.delete("/produtos/{id}")
 async def deletar_produto(id: int):
+    data = [
+        ["ID", "NOME", "FORNECEDOR", "QUANTIDADE"]
+    ]
+
     D_produtos = {}
-    encontrar_id = False
-
-    #abrir o arquivo em modo leitura
-    data = ler_produtos_csv()
-
-    #percorrer ele até achar o id informado
-    for linha in data:
-        if linha[0] == str(id):
-            encontrar_id = True
-            data.remove(linha)
-            break
-
-    if encontrar_id == False:
-        return {"ERRO" : "ID NÃO ENCONTRADO"}
-
-    # reescrever no arquivo
-    salvar_produtos_csv(data)
-
-    # ler o arquivo dnv para retornar o novo dicionário
     file_path = "Produtos.csv"
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                data.append(row)
 
+    cont = False
+    for linha in data:
+        if linha[0] == str(id):
+            data.pop(data.index(linha))
+            cont = True
+
+    if cont != True:
+        return {"ERRO":"ID informado não existe"}
+
+    with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
         for row in reader:
             if row[0] == 'ID':
                 continue
@@ -371,6 +381,47 @@ async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
 
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_ordensVendas[row[0]] = [row[1], row[2]]
+
+    return D_ordensVendas
+
+# delete ordens
+@app.delete("/ordens/{id}")
+async def deletar_ordemVendas(id: int):
+    data = [
+        ["ID", "CLIENTE", "PRODUTO"]
+    ]
+
+    D_ordensVendas = {}
+    file_path = "OrdemDeVendas.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                data.append(row)
+
+    cont = False
+    for linha in data:
+        if linha[0] == str(id):
+            data.pop(data.index(linha))
+            cont = True
+
+    if cont != True:
+        return {"ERRO":"ID informado não existe"}
+
+    with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
         for row in reader:
             if row[0] == 'ID':
                 continue
