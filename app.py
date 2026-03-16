@@ -4,13 +4,7 @@ from classes import *
 # -------------------------------------------- CLIENTES -------------------------------------------------------- #
 verificar_csv_clientes()
 
-#get clientes 
 
-@app.get("/clientes")
-def listar_clientes():
-    data = ler_clientes_csv () #lê os clientes
-
-    return data #retorna os clientes
 
 # post clientes
 @app.post("/clientes")
@@ -114,7 +108,30 @@ async def deletar_cliente(id: int):
 
 
 # ----------------------------------------------------- PRODUTOS -------------------------------------------------------------- #
+
 verificar_csv_produtos()
+
+
+
+#get produtos
+
+@app.get("/produtos")
+def listar_produtos():
+    D_produtos = {}
+
+    file_path = "Produtos.csv"
+
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if row[0] == 'ID':
+                continue
+            else:
+                D_produtos[row[0]] = [row[1], row[2], row[3]]
+
+    return D_produtos
+
 
 # put produtos
 @app.put("/produtos")
@@ -154,11 +171,6 @@ async def atualizar_produto(produto: Produtos):
 
 verificar_csv_ordemdevendas()
 
-@app.get("/ordens")
-def listar_ordens():
-    ordens = ler_ordemdevendas_csv()  # lê as ordens
-
-    return ordens
 @app.put("/ordens")
 async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
 
