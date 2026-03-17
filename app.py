@@ -32,6 +32,9 @@ async def criar_cliente(cliente: Cliente):
     D_clientes = {}
     data = ler_clientes_csv()
 
+    if cpf_existe(data, cliente.cpf):
+        return {"ERRO": "CPF JÁ CADASTRADO"}
+
     cliente = Cliente(
         id=gerar_proximo_id(data),
         nome=cliente.nome,
@@ -65,6 +68,11 @@ async def atualizar_cliente(cliente_id : int, cliente: Cliente):
     encontrar_id = False
     #abrir o arquivo em modo leitura
     data = ler_clientes_csv()
+
+    for linha in data:
+        if linha[0] != 'ID' and linha[0] != str(cliente_id) and linha[4] == cliente.cpf:
+            return {"ERRO": "CPF JÁ CADASTRADO"}
+
     #percorrer ele até achar o id informado 
     for linha in data:
         if linha[0] == str(cliente_id):
@@ -253,9 +261,9 @@ async def deletar_produto(id: int):
     for linha in data:
         if linha[0] == str(id):
             # manter o id e limpar os dados para ele não ser reutilizado
-            linha[1] = ""
-            linha[2] = ""
-            linha[3] = ""
+            linha[1] = "Produto não existe mais!"
+            linha[2] = "Produto não existe mais!"
+            linha[3] = "Produto não existe mais!"
             cont = True
 
     if cont != True:
@@ -431,8 +439,8 @@ async def deletar_ordemVendas(id: int):
     for linha in data:
         if linha[0] == str(id):
             # manter o id e limpar os dados para ele não ser reutilizado
-            linha[1] = ""
-            linha[2] = ""
+            linha[1] = "A ordem de venda foi apagada!"
+            linha[2] = "A ordem de venda foi apagada!"
             cont = True
 
     if cont != True:
