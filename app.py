@@ -32,7 +32,6 @@ async def criar_cliente(cliente: Cliente):
     D_clientes = {}
     data = ler_clientes_csv()
 
-
     cliente = Cliente(
         id=gerar_proximo_id(data),
         nome=cliente.nome,
@@ -41,7 +40,9 @@ async def criar_cliente(cliente: Cliente):
         cpf=cliente.cpf
     )
 
-    data = adicionar_cliente(data, cliente)
+    novo = [cliente.id, cliente.nome, cliente.sobrenome, cliente.data_de_nascimento, cliente.cpf ]
+    data.append(novo)
+
     salvar_clientes_csv(data)
 
     file_path = "Clientes.csv"
@@ -58,22 +59,24 @@ async def criar_cliente(cliente: Cliente):
     return D_clientes
 
 # put clientes 
-@app.put("/clientes")
-async def atualizar_cliente(cliente: Cliente):
+@app.put("/clientes/{cliente_id}")
+async def atualizar_cliente(cliente_id : int, cliente: Cliente):
     D_clientes = {}
     encontrar_id = False
     #abrir o arquivo em modo leitura
     data = ler_clientes_csv()
     #percorrer ele até achar o id informado 
     for linha in data:
-        if linha[0] == str(id):
+        if linha[0] == str(cliente_id):
             encontrar_id = True
+            print(linha[0])
             #quando achar substituir o nome
             linha[1] = cliente.nome
             linha[2] = cliente.sobrenome
             linha[3] = str(cliente.data_de_nascimento)
             linha[4] = cliente.cpf
     if encontrar_id == False:
+        print(linha[0])
         return {"ERRO" : "ID NÃO ENCONTRADO"}
     # reescrever no arquivo 
     salvar_clientes_csv(data)
@@ -176,8 +179,8 @@ async def criar_produto(produto: Produtos):
         fornecedor=produto.fornecedor,
         quantidade=produto.quantidade
     )
-
-    data = adicionar_produto(data, produto)
+    novo = [produto.id, produto.nome, produto.fornecedor, produto.quantidade]
+    data.append(novo)
     salvar_produtos_csv(data)
 
     file_path = "Produtos.csv"
@@ -191,19 +194,20 @@ async def criar_produto(produto: Produtos):
             else:
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
 
+
     return D_produtos
 
 
 # put produtos
-@app.put("/produtos")
-async def atualizar_produto(produto: Produtos):
+@app.put("/produtos/{produto_id}")
+async def atualizar_produto(produto_id: int, produto: Produtos):
     D_produtos = {}
     encontrar_id = False
     #abrir o arquivo em modo leitura
     data = ler_produtos_csv()
     #percorrer ele até achar o id informado 
     for linha in data:
-        if linha[0] == str(produto.id):
+        if linha[0] == str(produto_id):
             encontrar_id = True
             #quando achar substituir o nome
             linha[1] = produto.nome
@@ -348,8 +352,8 @@ async def criar_ordemVendas(ordemVendas: OrdemDeVendas):
 
 
 
-@app.put("/ordens")
-async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
+@app.put("/ordens/{ordem_id}")
+async def atualizar_ordemVendas(ordem_id : int, ordemVendas: OrdemDeVendas):
 
     clientes = ler_clientes_csv()
     produtos = ler_produtos_csv()
@@ -365,7 +369,7 @@ async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
 
     #percorrer ele até achar o id informado 
     for linha in data:
-        if linha[0] == str(ordemVendas.id):
+        if linha[0] == str(ordem_id):
             print(linha)
             encontrar_id = True
 
