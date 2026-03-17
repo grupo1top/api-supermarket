@@ -13,18 +13,16 @@ API REST para gerenciamento de clientes, produtos e ordens de venda, desenvolvid
 ### Instalar dependências
 
 ```bash
-pip install fastapi pydantic uvicorn
+pip install fastapi pydantic 
 ```
 
 ### Iniciar a aplicação
 
 ```bash
-uvicorn app:app --reload
+fastapi dev nome_do_arquivo.py
 ```
 
 A API estará disponível em `http://127.0.0.1:8000`.
-
-A documentação interativa (Swagger) gerada automaticamente pelo FastAPI estará em `http://127.0.0.1:8000/docs`.
 
 ---
 
@@ -36,7 +34,7 @@ A documentação interativa (Swagger) gerada automaticamente pelo FastAPI estar�
 |--------|------|-----------|
 | GET | `/clientes` | Lista todos os clientes |
 | POST | `/clientes` | Adiciona um novo cliente |
-| PUT | `/clientes` | Atualiza os dados de um cliente existente |
+| PUT | `/clientes/{id}` | Atualiza os dados de um cliente existente |
 | DELETE | `/clientes/{id}` | Remove um cliente pelo ID |
 
 ### Produtos
@@ -45,7 +43,7 @@ A documentação interativa (Swagger) gerada automaticamente pelo FastAPI estar�
 |--------|------|-----------|
 | GET | `/produtos` | Lista todos os produtos |
 | POST | `/produtos` | Adiciona um novo produto |
-| PUT | `/produtos` | Atualiza os dados de um produto existente |
+| PUT | `/produtos/{id}` | Atualiza os dados de um produto existente |
 | DELETE | `/produtos/{id}` | Remove um produto pelo ID |
 
 ### Ordens de Venda
@@ -54,7 +52,7 @@ A documentação interativa (Swagger) gerada automaticamente pelo FastAPI estar�
 |--------|------|-----------|
 | GET | `/ordens` | Lista todas as ordens de venda |
 | POST | `/ordens` | Cria uma nova ordem de venda |
-| PUT | `/ordens` | Atualiza uma ordem de venda existente |
+| PUT | `/ordens{id}` | Atualiza uma ordem de venda existente |
 | DELETE | `/ordens/{id}` | Remove uma ordem de venda pelo ID |
 
 ---
