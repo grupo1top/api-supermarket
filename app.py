@@ -69,7 +69,6 @@ async def atualizar_cliente(cliente_id : int, cliente: Cliente):
     for linha in data:
         if linha[0] == str(cliente_id):
             encontrar_id = True
-            print(linha[0])
             #quando achar substituir o nome
             linha[1] = cliente.nome
             linha[2] = cliente.sobrenome
