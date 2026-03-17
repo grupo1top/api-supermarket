@@ -1,5 +1,6 @@
-from functions import *
+﻿from functions import *
 from classes import *
+
 
 # -------------------------------------------- CLIENTES -------------------------------------------------------- #
 verificar_csv_clientes()
@@ -17,7 +18,7 @@ def listar_clientes():
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or cliente_foi_apagado(row):
                 continue
             else:
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
@@ -32,8 +33,14 @@ async def criar_cliente(cliente: Cliente):
     D_clientes = {}
     data = ler_clientes_csv()
 
-    if id_cliente_existe(data, str(cliente.id)):
-        return {"ERRO" : "ID JÁ EXISTE"}
+
+    cliente = Cliente(
+        id=gerar_proximo_id(data),
+        nome=cliente.nome,
+        sobrenome=cliente.sobrenome,
+        data_de_nascimento=cliente.data_de_nascimento,
+        cpf=cliente.cpf
+    )
 
     data = adicionar_cliente(data, cliente)
     salvar_clientes_csv(data)
@@ -44,7 +51,7 @@ async def criar_cliente(cliente: Cliente):
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or cliente_foi_apagado(row):
                 continue
             else:
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
@@ -79,7 +86,7 @@ async def atualizar_cliente(cliente: Cliente):
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or cliente_foi_apagado(row):
                 continue
             else:
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
@@ -107,7 +114,11 @@ async def deletar_cliente(id: int):
     cont = False
     for linha in data:
         if linha[0] == str(id):
-            data.pop(data.index(linha))
+            # manter o id e limpar os dados para ele não ser reutilizado
+            linha[1] = "Cliente não existe mais!"
+            linha[2] = "Cliente não existe mais!"
+            linha[3] = "Cliente não existe mais!"
+            linha[4] = "Cliente não existe mais!"
             cont = True
 
     if cont != True:
@@ -120,7 +131,7 @@ async def deletar_cliente(id: int):
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or cliente_foi_apagado(row):
                 continue
             else:
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
@@ -150,7 +161,7 @@ def listar_produtos():
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or produto_foi_apagado(row):
                 continue
             else:
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
@@ -163,8 +174,13 @@ async def criar_produto(produto: Produtos):
     D_produtos = {}
     data = ler_produtos_csv()
 
-    if id_produto_existe(data, str(produto.id)):
-        return {"ERRO" : "ID JÁ EXISTE"}
+    # gerar o id
+    produto = Produtos(
+        id=gerar_proximo_id(data),
+        nome=produto.nome,
+        fornecedor=produto.fornecedor,
+        quantidade=produto.quantidade
+    )
 
     data = adicionar_produto(data, produto)
     salvar_produtos_csv(data)
@@ -175,7 +191,7 @@ async def criar_produto(produto: Produtos):
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or produto_foi_apagado(row):
                 continue
             else:
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
@@ -210,7 +226,7 @@ async def atualizar_produto(produto: Produtos):
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or produto_foi_apagado(row):
                 continue
             else:
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
@@ -238,7 +254,10 @@ async def deletar_produto(id: int):
     cont = False
     for linha in data:
         if linha[0] == str(id):
-            data.pop(data.index(linha))
+            # manter o id e limpar os dados para ele não ser reutilizado
+            linha[1] = ""
+            linha[2] = ""
+            linha[3] = ""
             cont = True
 
     if cont != True:
@@ -251,7 +270,7 @@ async def deletar_produto(id: int):
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or produto_foi_apagado(row):
                 continue
             else:
                 D_produtos[row[0]] = [row[1], row[2], row[3]]
@@ -276,7 +295,7 @@ def listar_ordens():
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or ordem_foi_apagada(row):
                 continue
             else:
                 D_ordensVendas[row[0]] = [row[1], row[2]]
@@ -293,20 +312,24 @@ async def criar_ordemVendas(ordemVendas: OrdemDeVendas):
     D_ordensVendas = {}
     data = ler_ordemdevendas_csv()
 
-    if id_ordemdevenda_existe(data, str(ordemVendas.id)):
-        return {"ERRO" : "ID JÁ EXISTE"}
+    #gerar id 
+    ordemVendas = OrdemDeVendas(
+        id=gerar_proximo_id(data),
+        cliente=ordemVendas.cliente,
+        produto=ordemVendas.produto
+    )
 
     id_cliente = False
     id_produto = False
 
-    for cliente in clientes: # verificação se o cliente informado existe
+    for cliente in clientes: # verificaÃ§Ã£o se o cliente informado existe
         if cliente[0] == str(ordemVendas.cliente):
             id_cliente = True
             break
     if id_cliente == False:
         return {"ERRO" : "ID DO CLIENTE NÃO EXISTE"}
 
-    for produto in produtos: # verificação se o produto informado existe
+    for produto in produtos: # verificaÃ§Ã£o se o produto informado existe
         if produto[0] == str(ordemVendas.produto):
             id_produto = True
             break
@@ -317,12 +340,11 @@ async def criar_ordemVendas(ordemVendas: OrdemDeVendas):
     salvar_ordemdevendas_csv(data)
 
     file_path = "OrdemDeVendas.csv"
-
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or ordem_foi_apagada(row):
                 continue
             else:
                 D_ordensVendas[row[0]] = [row[1], row[2]]
@@ -352,7 +374,7 @@ async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
             print(linha)
             encontrar_id = True
 
-            for cliente in clientes: # verificação se o cliente informado existe
+            for cliente in clientes: # verificaÃ§Ã£o se o cliente informado existe
                 if cliente[0] == str(ordemVendas.cliente):
                     id_cliente = True
                     linha[1] = str(ordemVendas.cliente)
@@ -361,7 +383,7 @@ async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
                 print(cliente)
                 return {"ERRO" : "ID DO CLIENTE NÃO EXISTE"}
                         
-            for produto in produtos: # verificação se o produto informado existe
+            for produto in produtos: # verificaÃ§Ã£o se o produto informado existe
                 if produto[0] == str(ordemVendas.produto):
                     id_produto = True
                     linha[2] = str(ordemVendas.produto)
@@ -382,7 +404,7 @@ async def atualizar_ordemVendas(ordemVendas: OrdemDeVendas):
         reader = csv.reader(file)
 
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or ordem_foi_apagada(row):
                 continue
             else:
                 D_ordensVendas[row[0]] = [row[1], row[2]]
@@ -410,7 +432,9 @@ async def deletar_ordemVendas(id: int):
     cont = False
     for linha in data:
         if linha[0] == str(id):
-            data.pop(data.index(linha))
+            # manter o id e limpar os dados para ele não ser reutilizado
+            linha[1] = ""
+            linha[2] = ""
             cont = True
 
     if cont != True:
@@ -423,12 +447,14 @@ async def deletar_ordemVendas(id: int):
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
         for row in reader:
-            if row[0] == 'ID':
+            if row[0] == 'ID' or ordem_foi_apagada(row):
                 continue
             else:
                 D_ordensVendas[row[0]] = [row[1], row[2]]
 
     return D_ordensVendas
+
+
 
 
 

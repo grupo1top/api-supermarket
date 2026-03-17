@@ -1,7 +1,7 @@
 from functions import *
 
 class Cliente(BaseModel):
-    id: int
+    id: int = 0
     nome: str
     sobrenome: str 
     data_de_nascimento: date
@@ -9,13 +9,13 @@ class Cliente(BaseModel):
 
 
 class Produtos(BaseModel):
-    id: int
+    id: int = 0
     nome: str 
     fornecedor: str
     quantidade: int
 
 
 class OrdemDeVendas(BaseModel):
-    id: int
+    id: int = 0
     cliente: int
     produto: int

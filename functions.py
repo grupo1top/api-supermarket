@@ -185,6 +185,37 @@ def id_ordemdevenda_existe(data, OrdemDeVenda_id):
             return True
     return False 
 
+def gerar_proximo_id(data):
+    maior_id = 0
+
+    for row in data:
+        if row[0] == 'ID':
+            continue
+
+        if int(row[0]) > maior_id:
+            # guarda o maior id encontrado
+            maior_id = int(row[0])
+
+    return maior_id + 1
+
+def cpf_existe(data, cpf):
+    for linha in data:
+        if linha[4] == cpf:
+            return True
+    return False
+
+
+def cliente_foi_apagado(row):
+    return row[1] == "Cliente não existe mais!" and row[2] == "Cliente não existe mais!" and row[3] == "Cliente não existe mais!" and row[4] == "Cliente não existe mais!"
+
+
+def produto_foi_apagado(row):
+    return row[1] == "" and row[2] == "" and row[3] == ""
+
+
+def ordem_foi_apagada(row):
+    return row[1] == "" and row[2] == ""
+
                         # VERIFICAR SE UM ID JÁ EXISTE #
 # ---------------------------------------------------------------------------------- #
 
