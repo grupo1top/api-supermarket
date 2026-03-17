@@ -26,7 +26,6 @@ def listar_clientes():
     return D_clientes
 
 
-
 # post clientes
 @app.post("/clientes")
 async def criar_cliente(cliente: Cliente):
@@ -67,7 +66,7 @@ async def atualizar_cliente(cliente: Cliente):
     data = ler_clientes_csv()
     #percorrer ele até achar o id informado 
     for linha in data:
-        if linha[0] == str(cliente.id):
+        if linha[0] == str(id):
             encontrar_id = True
             #quando achar substituir o nome
             linha[1] = cliente.nome
@@ -137,10 +136,6 @@ async def deletar_cliente(id: int):
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
 
     return D_clientes
-
-
-
-
 
 
 # ----------------------------------------------------- PRODUTOS -------------------------------------------------------------- #

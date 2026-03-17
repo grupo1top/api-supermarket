@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from datetime import date  # tipo data
 
 app = FastAPI()
+lista_id = []
+id_cliente = 0
 # ---------------------------------------------------------------------------------- #
                 # FUNÇÕES PARA VERIFICAR O CSV (SE JÁ ESTÁ CRIADO / CRIAR) #
 
@@ -114,11 +116,41 @@ def ler_ordemdevendas_csv():
 
 # ---------------------------------------------------------------------------------- #
                 # ADICIONAR NOVOS CLIENTES, ORDEM, PRODUTOS #
+def gerar_proximo_id(data):
+
+    maior_id = None
+
+    for row in data:
+        if row[0] == 'ID':
+            continue
+
+        if int(row[0]) > maior_id:
+            maior_id = int(row[0])
+
+    return maior_id + 1
 
 def adicionar_cliente(data, Cliente):
-    novo = [Cliente.id, Cliente.nome, Cliente.sobrenome, Cliente.data_de_nascimento, Cliente.cpf ]
-    data.append(novo)
-    return data
+    global id_cliente
+    maior_id = 0
+    global lista_id
+    
+    for row in data:
+        if row[0] == 'ID':
+            continue
+
+        if int(row[0]) > maior_id:
+            maior_id = int(row[0])
+    id_cliente = maior_id + 1  
+
+    if id_cliente not in lista_id: 
+        novo = [id_cliente, Cliente.nome, Cliente.sobrenome, Cliente.data_de_nascimento, Cliente.cpf ]
+        data.append(novo)
+        lista_id.append(id_cliente)
+    else:
+        id_cliente += 1
+        novo = [id_cliente, Cliente.nome, Cliente.sobrenome, Cliente.data_de_nascimento, Cliente.cpf ]
+        data.append(novo)
+    return data 
 
 def adicionar_produto(data, Produtos):
     novo = [Produtos.id, Produtos.nome, Produtos.fornecedor, Produtos.quantidade]
