@@ -1,7 +1,6 @@
 from functions import *
 
 class Cliente(BaseModel):
-    id: int
     nome: str
     sobrenome: str 
     data_de_nascimento: date

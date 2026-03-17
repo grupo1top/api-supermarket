@@ -25,15 +25,14 @@ def listar_clientes():
     return D_clientes
 
 
-
 # post clientes
 @app.post("/clientes")
 async def criar_cliente(cliente: Cliente):
     D_clientes = {}
     data = ler_clientes_csv()
 
-    if id_cliente_existe(data, str(cliente.id)):
-        return {"ERRO" : "ID JÁ EXISTE"}
+    #if id_cliente_existe(data, str(cliente.id)):
+        #return {"ERRO" : "ID JÁ EXISTE"}
 
     data = adicionar_cliente(data, cliente)
     salvar_clientes_csv(data)
@@ -60,7 +59,7 @@ async def atualizar_cliente(cliente: Cliente):
     data = ler_clientes_csv()
     #percorrer ele até achar o id informado 
     for linha in data:
-        if linha[0] == str(cliente.id):
+        if linha[0] == str(id):
             encontrar_id = True
             #quando achar substituir o nome
             linha[1] = cliente.nome
@@ -126,10 +125,6 @@ async def deletar_cliente(id: int):
                 D_clientes[row[0]] = [row[1], row[2], row[3], row[4]]
 
     return D_clientes
-
-
-
-
 
 
 # ----------------------------------------------------- PRODUTOS -------------------------------------------------------------- #
